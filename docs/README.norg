@@ -1,0 +1,9 @@
+* the bron jame
+  .gif assets/the-bron-jame.gif
+
+* boot process
+* bootloaders
+* entering the kernel
+  {:notes/a20:}[A20 line]
+  {:notes/gdt:}[GDT (global descriptor table)]
+

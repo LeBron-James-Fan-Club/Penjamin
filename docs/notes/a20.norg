@@ -1,0 +1,29 @@
+* segmenting
+  recall that in 16 bit real mode, we can refer (extend our addressing space)
+  by combining two 16 bit registers (usually a segment address) to create a 20
+  bit address so we can make use of more memory? 
+
+  ** the introduction of 32 bit CPUs
+     this meant that the address bus (a physical circuit thing that lives on your cpu)
+     was built to have 20 bits - which posed an issue when 32 bit cpus were introduced.
+    *** what the fuck was intel on?
+        This, naturally entailed that people want a 32 bit address bus and since the smart
+        people at intel decided instead of porting 16 bit software to use the 32 bit address bus,
+        (since old software was used to using the 20 bit bus) and was only designed to deal with
+        that address space, when you tried to use larger bit addressing space it would fuck up
+    *** the a20 line
+        the lazy fucks at intel decided to RESTRICT the addressing bus to 20 bits and you had to
+        turn A20 mode on to address more than 20 bits LOL AND MAKE THAT RESTRICTION DEFAULT :sob:
+        and this is standard, even for us on 64 bit x86 cpus
+    *** ok, thats silly but i want a20 enabled
+        cpu manufactors have decided to create a thing called "fast a20" to simplify enabling a20.
+        To undergo fast a20, you need to read from a port (0x96), flip the a20 bit and write back
+        to the port. keep in mind that the value in the a20 port is 8 bits, so we can use any 8
+        bit register (al, ah, bl, bh, ...)
+        @code asm
+
+            in      al, 0x96    ; read from the fast a20 port
+            or      al, 2       ; use or to flip the second last bit
+            out     0x96, al    ; write back to a20 port to enable a20
+
+        @end
