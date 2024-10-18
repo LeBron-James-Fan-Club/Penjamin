@@ -9,6 +9,10 @@
 org 0x7c00
 bits 16
 
+; setup stack
+    mov     bp,     0x7c00
+    mov     sp,     bp
+
 jmp     print_boot_message__init
 
 ; bios syscalls to print
@@ -48,7 +52,6 @@ gdt_segment_base:
 gdt_segment_limit:
     ; 20 bit value (relic of a20 mode)
     ; maximum address (contrary to base address)
-    db 
 gdt_segment_access:
 gdt_segment_flags:
     
