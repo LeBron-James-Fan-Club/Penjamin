@@ -1,0 +1,41 @@
+* context
+  - as its name hints, it is a table which is both global and is a table (wow)
+  - as a table, it holds a collection of values
+    -- contains information on difference segments in memory
+    -- very important to be used to protect segments of memory (not to be confused with 32 bit cpu modes)
+  - since it is global, it is accessible anywhere in our OS
+  ** the gdt
+     the gdt is pretty important since it can be used to trigger GPFS
+     a GPF (general protection fault) is a fault that is caused for example when memory 
+     isn't accessed or something wrong goes wrong - thus is a vital protection feature
+     when someone tries to do something that ins't allowed
+
+     The way a cpu manages and makes use of GPFS are through the GDT. 
+  ** gdt structure
+     a gdt is comprised of:
+     - the null descriptor
+       -- 8 bytes of zeros
+       -- allows the cpu to nullify descriptors and deal the gpfs (i assume its a buffer for the cpu)
+     - code/data descriptors
+       -- code descriptor:
+         --- 8 bytes to specify the executable data (base addr, limit, etc)
+         --- keep in mind that its hard to differentiate code and data at a low level;
+             code and data are both 1s and 0s, and is just used differently.
+         --- in order to formalise this distinction for the cpu to know what is data and code,
+             these descriptors exist
+     - task state segment descriptor
+       -- more useful for multitasking
+       -- when you start executing a task, and want to execute another task, (on single
+          thread), then what happens is that your multiple tasks get juggled by the cpu
+       -- we have schedulers, which give different cpu time to different processors.
+       -- so when we juggle different processes, we want the cpu to be in the same state
+          as it was when it juggles between two tasks (say a browser and a game). when it jumps
+          in between the browser and the game, we want it when it jumps back from the browser 
+          to the game to be in the same state.
+       -- this issue is dealt with th context switch, which stores the context (state of
+          the process)
+       -- the task state segment is that context that describes the state of a context
+     - GDTR (global descriptor table register)
+       -- a descriptor where the gdt starts and how long it is 
+       -- the GDT varies in size because 
+  ** implementing in asm
