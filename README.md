@@ -8,6 +8,7 @@ Penjamin is a hobbist x86 operating system built to be booted from a pen drive (
 - Two-stage bootloader
 
 ## TODOS
+- [ ] write good docs :(
 - [ ] bios bootloader (switch to UEFI after OS is stable)
   - [x] Setup skeleton (start at 0x7c00, show bios signature at bytes 511 & 512)
   - [x] A20 line
