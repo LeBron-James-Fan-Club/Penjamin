@@ -15,3 +15,7 @@ Penjamin is a hobbist x86 operating system built to be booted from a pen drive (
   - [ ] 32 bit mode
   - [ ] preparing to boot (gathering info)
 - [ ] kernel
+
+## Resources
+[https://youtube.com/playlist?list=PL5p37LtXzjqOoEl369i0nlTSaU1O3L-BN&si=4w42QHoUpCoiOeS1](prolly the best resource you can ever use)
+[http://www.cs.cmu.edu/~410-s07/p4/p4-boot.pdf](bootloader stuff)
