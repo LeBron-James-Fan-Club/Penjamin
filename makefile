@@ -1,7 +1,7 @@
-ASM = nasm
+final: build/bootloader
 
-src/bootloader.s: build/bootloader
-	nasm src/bootloader.s -o build/bootloader
+build/bootloader: src/boot/bootloader.s
+	nasm src/boot/bootloader.s -o build/bootloader
 
-run:
+run: build/bootloader
 	qemu-system-x86_64 build/bootloader
