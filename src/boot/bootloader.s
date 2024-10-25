@@ -9,30 +9,41 @@
 org 0x7c00
 bits 16
 
-jmp     print_boot_message__init
+; setup stack
+    mov     bp,     0x7c00
+    mov     sp,     bp
 
-; bios syscalls to print
-print_boot_message__init:
+%include "src/boot/print.s"
+
+print:
     lea     bx,     message_on_boot
-print_boot_message__cond:
-    mov     cx,     [bx]
-    cmp     cx,     0
-    je      print_boot_message__end
+    call    print_boot_message__init
+    jmp     enter_a20
 
-print_boot_message__body:
-    ; kinda hacky ngl (cx = ch (top 8 bits) + cl (low 8 bits))
-    mov     al,     cl
-    mov     ah,     0xe
-    int     0x10
+enter_a20:
+    in      al,     0x96    ; read from the a20 port
+    or      al,     2       ; use or to flip the second last bit
+    out     0x96,   al      ; return flipped bit to enable a20
 
-    add     bx,     1
-    jmp     print_boot_message__cond
+gdt_start:
+gdt_start_null:
+    ; 64 bits of 0s, buffer for cpu to use
+    dq      0
+gdt_segment:
+gdt_segment_base:
+    ; 32 bit value
+    ; earliest memory address you can find this segment at
+    dw      0
+gdt_segment_limit:
+    ; 20 bit value (relic of a20 mode)
+    ; maximum address (contrary to base address)
+gdt_segment_access:
+gdt_segment_flags:
+    
 
-print_boot_message__end:
-    jmp     print_boot_message__end
 
 message_on_boot:
-    db "sigma sigma balls", 0
+    db "sigma sigma", 0
 
 ; populates the bootloader to be exactly 510 bytes after 0x7c00
 ; so we can set the 511th and 512th bytes to be 0xAA55
