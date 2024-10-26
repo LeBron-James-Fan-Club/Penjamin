@@ -17,7 +17,7 @@ read_disk:
     call    print_message__init
 
     ; print (x)
-    mov     bx,     [out_of_bounds + 0x01]
+    mov     bx,     [out_of_bounds]
     call    print_hex_char
 
     ; reset cursor to beginning of line and then newline
