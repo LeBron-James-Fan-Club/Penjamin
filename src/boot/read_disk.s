@@ -28,7 +28,7 @@ read_disk:
     jc      disk_error
 
     mov     bx,     disk_pass_string
-    call    print_boot_message__init
+    call    print_message__init
 
     popa
     ret
@@ -36,7 +36,7 @@ read_disk:
 disk_error:
     pusha
     mov     bx,     disk_error_string
-    call    print_boot_message__init
+    call    print_message__init
     popa
     jmp     $       ; loop in place after error
     

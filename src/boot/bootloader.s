@@ -15,14 +15,12 @@
 
 start:
     mov     bx,     message_on_boot
+    call    print_message__init
 
-    pusha
-    call    print_boot_message__init
-    popa
-
-    pusha
     call    read_disk
-    popa
+    
+    mov     bx,     [0x8000 + 1024]
+    call    print_hex_char
 
     jmp $
     jmp     enter_a20
@@ -66,5 +64,5 @@ times 510 - ($ - $$) db 0
 dw      0xAA55
 
 ; out of range values for disk read
-times 256 dw 0xdada
-times 256 dw 0xface
+times 256 dw "f"
+times 256 dw "p"
