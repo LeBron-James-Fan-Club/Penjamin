@@ -6,19 +6,28 @@
 
 ; i think this is a nasm thing since org and bits are preprocessor macros
 ; making sure our code starts at 0x7c00
-org 0x7c00
-bits 16
+[org 0x7c00]
+[bits 16]
 
 ; setup stack
     mov     bp,     0x7c00
     mov     sp,     bp
 
-%include "src/boot/print.s"
+start:
+    mov     bx,     message_on_boot
 
-print:
-    lea     bx,     message_on_boot
+    pusha
     call    print_boot_message__init
+    popa
+
+    pusha
+    call    read_disk
+    popa
+
+    jmp $
     jmp     enter_a20
+
+
 
 enter_a20:
     in      al,     0x96    ; read from the a20 port
@@ -41,9 +50,11 @@ gdt_segment_access:
 gdt_segment_flags:
     
 
+%include "src/boot/print.s"
+%include "src/boot/read_disk.s"
 
 message_on_boot:
-    db "sigma sigma", 0
+    db "sigma sigma", 10, 0
 
 ; populates the bootloader to be exactly 510 bytes after 0x7c00
 ; so we can set the 511th and 512th bytes to be 0xAA55
@@ -53,3 +64,7 @@ message_on_boot:
 times 510 - ($ - $$) db 0
 ; used to show that this device is bootable to the bios
 dw      0xAA55
+
+; out of range values for disk read
+times 256 dw 0xdada
+times 256 dw 0xface
