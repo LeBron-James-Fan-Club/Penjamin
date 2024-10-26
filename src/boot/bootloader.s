@@ -6,41 +6,33 @@
 
 ; i think this is a nasm thing since org and bits are preprocessor macros
 ; making sure our code starts at 0x7c00
-org 0x7c00
-bits 16
+[org 0x7c00]
+[bits 16]
 
 ; setup stack
     mov     bp,     0x7c00
     mov     sp,     bp
 
-%include "src/boot/print.s"
+start:
+    mov     bx,     message_on_boot
+    call    print_message__init
 
-print:
-    lea     bx,     message_on_boot
-    call    print_boot_message__init
+    call    read_disk
+    
+    jmp $
+
     jmp     enter_a20
+
+
 
 enter_a20:
     in      al,     0x96    ; read from the a20 port
     or      al,     2       ; use or to flip the second last bit
     out     0x96,   al      ; return flipped bit to enable a20
-
-gdt_start:
-gdt_start_null:
-    ; 64 bits of 0s, buffer for cpu to use
-    dq      0
-gdt_segment:
-gdt_segment_base:
-    ; 32 bit value
-    ; earliest memory address you can find this segment at
-    dw      0
-gdt_segment_limit:
-    ; 20 bit value (relic of a20 mode)
-    ; maximum address (contrary to base address)
-gdt_segment_access:
-gdt_segment_flags:
     
 
+%include "src/boot/print.s"
+%include "src/boot/read_disk.s"
 
 message_on_boot:
     db "sigma sigma", 0
@@ -53,3 +45,6 @@ message_on_boot:
 times 510 - ($ - $$) db 0
 ; used to show that this device is bootable to the bios
 dw      0xAA55
+
+out_of_bounds:
+    times   512     db "x"
