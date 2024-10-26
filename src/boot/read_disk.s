@@ -16,7 +16,14 @@ read_disk:
     mov     bx,     disk_check_hex_string
     call    print_message__init
 
+    ; print (x)
     mov     bx,     [out_of_bounds + 0x01]
+    call    print_hex_char
+
+    ; reset cursor to beginning of line and then newline
+    mov     bx,     13
+    call    print_hex_char
+    mov     bx,     10
     call    print_hex_char
 
     popa
