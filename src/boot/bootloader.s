@@ -19,20 +19,16 @@ start:
 
     call    read_disk
     
+    call    enter_a20
     jmp $
 
-    jmp     enter_a20
 
 
-
-enter_a20:
-    in      al,     0x96    ; read from the a20 port
-    or      al,     2       ; use or to flip the second last bit
-    out     0x96,   al      ; return flipped bit to enable a20
     
 
 %include "src/boot/print.s"
 %include "src/boot/read_disk.s"
+%include "src/boot/setup_32bit.s"
 
 message_on_boot:
     db 10, "Sigma rule #1:", 13, 10, "if your tummy hurts, try not to cry.", 13, 10, 0
