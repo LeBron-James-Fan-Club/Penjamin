@@ -35,7 +35,7 @@ enter_a20:
 %include "src/boot/read_disk.s"
 
 message_on_boot:
-    db "sigma sigma", 0
+    db 10, "Sigma rule #1:", 13, 10, "if your tummy hurts, try not to cry.", 13, 10, 0
 
 ; populates the bootloader to be exactly 510 bytes after 0x7c00
 ; so we can set the 511th and 512th bytes to be 0xAA55
