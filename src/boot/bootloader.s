@@ -17,11 +17,13 @@ start:
     mov     bx,     message_on_boot
     call    print_message__bios
 
-    ;
+    ; tell bios interrupt that we want to load read disk values into memory addresses of
+    ; ES:BX = 0:0x7e00
     mov     bx,     0x7e00
     call    read_disk
     
     call    enter_a20
+    call    enter_gdt
     jmp $
 
 
