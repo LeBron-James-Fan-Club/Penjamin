@@ -24,15 +24,13 @@ start:
     
     call    enter_a20
     call    enter_gdt
-    jmp $
 
-
-
+    ; finally enter 32 bit protected mode
+    jmp CODE_SEG:enter_protected_mode
     
 
-%include "src/boot/print.s"
+%include "src/boot/print_bios.s"
 %include "src/boot/read_disk.s"
-%include "src/boot/setup_32bit.s"
 
 message_on_boot:
     db 10, "Sigma rule #1:", 13, 10, "if your tummy hurts, try not to cry.", 13, 10, 0
@@ -46,16 +44,28 @@ times 510 - ($ - $$) db 0
 ; used to show that this device is bootable to the bios
 dw      0xAA55
 
+; second sector starts here
 check_read_validity:
     pusha
 
-    mov     bx,     "x"
-    call    print_hex_char_bios
-    ; reset cursor to beginning of line and then newline
-    mov     bx,     13
-    call    print_hex_char_bios
-    mov     bx,     10
-    call    print_hex_char_bios
+    mov     bx,     disk_read_successful_string
+    call    print_message__bios
 
     popa
     ret
+
+disk_read_successful_string:
+    db "disk read successful!", 0, 0
+
+enter_protected_mode:
+    [bits 32]
+    mov     eax,    cr0
+    or      eax,    1
+    mov     cr0,    eax
+
+
+
+    jmp $
+
+%include "src/boot/setup_32bit.s"
+

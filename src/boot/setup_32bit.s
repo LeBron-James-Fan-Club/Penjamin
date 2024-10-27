@@ -11,11 +11,8 @@ enter_a20:
 enter_gdt:
     pusha
 
+    cli
     lgdt    [gdt__descriptor]
-    [bits 32]
-    mov     eax,    cr0
-    or      eax,    0x1
-    mov     cro,    eax
 
     popa
     ret
@@ -56,3 +53,6 @@ gdt__end:
 gdt__descriptor:
     dw      gdt__end - gdt__start - 1   ; gets the size of our gdt
     dd      gdt__start                  ; beginning address of our gdt
+
+CODE_SEG    equ gdt__code - gdt__start
+DATA_SEG    equ gdt__data - gdt__start
