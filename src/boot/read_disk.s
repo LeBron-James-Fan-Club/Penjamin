@@ -11,20 +11,13 @@ read_disk:
     jc      disk_error
 
     mov     bx,     disk_pass_string
-    call    print_message__init
+    call    print_message__bios
 
     mov     bx,     disk_check_hex_string
-    call    print_message__init
+    call    print_message__bios
 
-    ; print (x)
-    mov     bx,     [out_of_bounds]
-    call    print_hex_char
-
-    ; reset cursor to beginning of line and then newline
-    mov     bx,     13
-    call    print_hex_char
-    mov     bx,     10
-    call    print_hex_char
+    ; verify if read segment is actually read (call function)
+    call    check_read_validity
 
     popa
     ret
@@ -33,7 +26,7 @@ read_disk:
 disk_error:
     pusha
     mov     bx,     disk_error_string
-    call    print_message__init
+    call    print_message__bios
     popa
     jmp     $       ; loop in place after error
     

@@ -15,8 +15,10 @@
 
 start:
     mov     bx,     message_on_boot
-    call    print_message__init
+    call    print_message__bios
 
+    ;
+    mov     bx,     0x7e00
     call    read_disk
     
     call    enter_a20
@@ -42,5 +44,16 @@ times 510 - ($ - $$) db 0
 ; used to show that this device is bootable to the bios
 dw      0xAA55
 
-out_of_bounds:
-    times   512     db "x"
+check_read_validity:
+    pusha
+
+    mov     bx,     "x"
+    call    print_hex_char_bios
+    ; reset cursor to beginning of line and then newline
+    mov     bx,     13
+    call    print_hex_char_bios
+    mov     bx,     10
+    call    print_hex_char_bios
+
+    popa
+    ret
