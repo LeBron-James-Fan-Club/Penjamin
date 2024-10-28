@@ -1,9 +1,9 @@
 ; bios syscalls to print
-print_message__init:
+print_message__bios:
     pusha
 print_message__cond:
-    mov     cx,     [bx]
-    cmp     cx,     0
+    mov     cl,     [bx]
+    cmp     cl,     0
     je      print_message__end
 
 print_message__body:
@@ -26,7 +26,7 @@ print_message__end:
     popa
     ret
 
-print_hex_char:
+print_hex_char_bios:
     pusha
 
     mov     al,     bl

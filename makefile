@@ -1,6 +1,6 @@
 final: build/bootloader
 
-build/bootloader: src/boot/bootloader.s src/boot/print.s src/boot/read_disk.s
+build/bootloader: src/boot/bootloader.s src/boot/print_bios.s src/boot/read_disk.s
 	nasm src/boot/bootloader.s -o build/bootloader
 
 run: final

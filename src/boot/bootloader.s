@@ -15,23 +15,21 @@
 
 start:
     mov     bx,     message_on_boot
-    call    print_message__init
+    call    print_message__bios
 
+    ; tell bios interrupt that we want to load read disk values into memory addresses of
+    ; ES:BX = 0:0x7e00
+    mov     bx,     0x7e00
     call    read_disk
     
-    jmp $
+    call    enter_a20
+    call    enter_gdt
 
-    jmp     enter_a20
-
-
-
-enter_a20:
-    in      al,     0x96    ; read from the a20 port
-    or      al,     2       ; use or to flip the second last bit
-    out     0x96,   al      ; return flipped bit to enable a20
+    ; finally enter 32 bit protected mode
+    jmp CODE_SEG:enter_protected_mode
     
 
-%include "src/boot/print.s"
+%include "src/boot/print_bios.s"
 %include "src/boot/read_disk.s"
 
 message_on_boot:
@@ -46,5 +44,28 @@ times 510 - ($ - $$) db 0
 ; used to show that this device is bootable to the bios
 dw      0xAA55
 
-out_of_bounds:
-    times   512     db "x"
+; second sector starts here
+check_read_validity:
+    pusha
+
+    mov     bx,     disk_read_successful_string
+    call    print_message__bios
+
+    popa
+    ret
+
+disk_read_successful_string:
+    db "disk read successful!", 0, 0
+
+enter_protected_mode:
+    [bits 32]
+    mov     eax,    cr0
+    or      eax,    1
+    mov     cr0,    eax
+
+
+
+    jmp $
+
+%include "src/boot/setup_32bit.s"
+
