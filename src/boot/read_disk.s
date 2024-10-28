@@ -28,8 +28,8 @@ disk_error:
     jmp     $       ; loop in place after error
     
 disk_error_string: 
-    db "disk error", 0, 0
+    db "disk error", 0
 
 disk_pass_string:
-    db "disk load completed with no errors", 0, 0
+    db "disk load completed with no errors", 0
 

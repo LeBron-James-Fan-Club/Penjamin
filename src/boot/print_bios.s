@@ -2,8 +2,8 @@
 print_message__bios:
     pusha
 print_message__cond:
-    mov     cx,     [bx]
-    cmp     cx,     0
+    mov     cl,     [bx]
+    cmp     cl,     0
     je      print_message__end
 
 print_message__body:
