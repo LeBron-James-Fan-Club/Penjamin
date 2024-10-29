@@ -2,7 +2,7 @@
 
 Penjamin is a hobbist x86 operating system built to be booted from a pen drive (since its cool to show people that the operating system u wrote as a physical token)
 
-![image](assets/thumbnail.png)
+![image](assets/thumbnail-small.png)
 
 ## architecture
 - Two-stage bootloader
