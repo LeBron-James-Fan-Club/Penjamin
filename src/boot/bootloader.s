@@ -41,6 +41,7 @@ times 510 - ($ - $$) db 0
 dw      0xAA55
 
 ; second sector starts here
+%include "src/boot/setup_32bit.s"
 check_read_validity:
     pusha
 
@@ -72,13 +73,14 @@ enter_protected_mode:
     mov     ebp,    0x90000
     mov     esp,    ebp
 
+    mov     ebx,    gdt_success_string
+    call    print__vga_init
     jmp $
 
-%include "src/boot/setup_32bit.s"
-%include "src/boot/print_vga.s"
 
 disk_read_successful_string:
     db "disk read successful!", 0, 0
 gdt_success_string:
-    db "successfully entered 32 bit + gdt!", 0, 0
+    db "successfully entered 32 bit + gdt! time to load the kernel :D", 0, 0
 
+%include "src/boot/print_vga.s"

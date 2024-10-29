@@ -21,10 +21,8 @@ read_disk:
 
 
 disk_error:
-    pusha
     mov     bx,     disk_error_string
     call    print_message__bios
-    popa
     jmp     $       ; loop in place after error
     
 disk_error_string: 
