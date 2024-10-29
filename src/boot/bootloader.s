@@ -59,11 +59,16 @@ disk_read_successful_string:
 
 enter_protected_mode:
     [bits 32]
-    mov     eax,    cr0
-    or      eax,    1
-    mov     cr0,    eax
 
+    mov     ax,     DATA_SEG    ; our old segments are useless,
+    mov     ds,     ax ; so we point our segment registers to the
+    mov     ss,     ax ; data selector we defined in our GDT
+    mov     es,     ax
+    mov     fs,     ax
+    mov     gs,     ax
 
+    mov     ebp,    0x90000
+    mov     esp,    ebp
 
     jmp $
 
