@@ -14,6 +14,9 @@ enter_gdt:
     cli
     lgdt    [gdt__descriptor]
 
+    mov     eax,    cr0
+    or      eax,    1
+    mov     cr0,    eax
     popa
     ret
 
