@@ -8,6 +8,10 @@ enter_a20:
     popa
     ret
 
+setup_vga:
+    mov     ax,     0x3
+    int     0x10
+
 enter_gdt:
     pusha
 

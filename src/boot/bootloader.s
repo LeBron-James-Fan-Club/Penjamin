@@ -22,12 +22,8 @@ start:
     mov     bx,     0x7e00
     call    read_disk
     
-    call    enter_a20
-    call    enter_gdt
+    jmp     continue_main
 
-    ; finally enter 32 bit protected mode
-    jmp CODE_SEG:enter_protected_mode
-    
 
 %include "src/boot/print_bios.s"
 %include "src/boot/read_disk.s"
@@ -54,12 +50,18 @@ check_read_validity:
     popa
     ret
 
-disk_read_successful_string:
-    db "disk read successful!", 0, 0
+continue_main:
+    call    enter_a20
+    call    setup_vga
 
+    call    enter_gdt
+
+    ; finally enter 32 bit protected mode
+    jmp     CODE_SEG:enter_protected_mode
+
+
+[bits 32]
 enter_protected_mode:
-    [bits 32]
-
     mov     ax,     DATA_SEG    ; our old segments are useless,
     mov     ds,     ax ; so we point our segment registers to the
     mov     ss,     ax ; data selector we defined in our GDT
@@ -73,4 +75,10 @@ enter_protected_mode:
     jmp $
 
 %include "src/boot/setup_32bit.s"
+%include "src/boot/print_vga.s"
+
+disk_read_successful_string:
+    db "disk read successful!", 0, 0
+gdt_success_string:
+    db "successfully entered 32 bit + gdt!", 0, 0
 
