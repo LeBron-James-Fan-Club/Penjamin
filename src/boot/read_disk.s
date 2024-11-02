@@ -2,9 +2,7 @@ read_disk:
     pusha
 
     mov     ah,     0x02
-    mov     al,     1   ; read 1 sectors
     mov     ch,     0   ; cylinder 0
-    mov     cl,     2   ; read from the second sector
     mov     dh,     0   ; head 0
 
     int     0x13 

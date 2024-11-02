@@ -1,4 +1,3 @@
-int kernel_main()
+void kernel_main()
 {
-    return 0xbaba;
 }
