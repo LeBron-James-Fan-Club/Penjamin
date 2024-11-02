@@ -1,16 +1,18 @@
 enter_a20:
     pusha
 
-    in      al,     0x96    ; read from the a20 port
-    or      al,     2       ; use or to flip the second last bit
-    out     0x96,   al      ; return flipped bit to enable a20
+    mov ax, 0x2401
+    int 0x15
 
     popa
     ret
 
 setup_vga:
+    pusha
     mov     ax,     0x3
     int     0x10
+    popa
+    ret
 
 enter_gdt:
     pusha
@@ -38,7 +40,6 @@ enter_gdt:
     ;   accessed        - mostly used for debugging/vram techniques (cpu sets to 1 when
     ;                     it accesses the segment)
 gdt__start:
-gdt__null:
     dq      0x0
 gdt__code:
     dw      0xffff      ; limit
@@ -58,7 +59,7 @@ gdt__data:
 gdt__end:
 
 gdt__descriptor:
-    dw      gdt__end - gdt__start - 1   ; gets the size of our gdt
+    dw      gdt__end - gdt__start   ; gets the size of our gdt
     dd      gdt__start                  ; beginning address of our gdt
 
 CODE_SEG    equ gdt__code - gdt__start

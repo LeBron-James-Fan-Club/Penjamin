@@ -19,7 +19,14 @@ start:
 
     ; tell bios interrupt that we want to load read disk values into memory addresses of
     ; ES:BX = 0:0x7e00
+    mov     al,     1   ; read 1 sectors
+    mov     cl,     2   ; read from the second sector
     mov     bx,     0x7e00
+    call    read_disk
+
+    mov     al,     2
+    mov     cl,     3
+    mov     bx,     0x8000
     call    read_disk
     
     jmp     continue_main
@@ -40,7 +47,10 @@ times 510 - ($ - $$) db 0
 ; used to show that this device is bootable to the bios
 dw      0xAA55
 
+second_sector_start:
+
 ; second sector starts here
+%include "src/boot/setup_32bit.s"
 check_read_validity:
     pusha
 
@@ -72,13 +82,21 @@ enter_protected_mode:
     mov     ebp,    0x90000
     mov     esp,    ebp
 
-    jmp $
+    mov     ebx,    gdt_success_string
+    call    print__vga_init
+    jmp     CODE_SEG:kernel_start_addr
 
-%include "src/boot/setup_32bit.s"
-%include "src/boot/print_vga.s"
 
 disk_read_successful_string:
     db "disk read successful!", 0, 0
 gdt_success_string:
-    db "successfully entered 32 bit + gdt!", 0, 0
+    db "successfully entered 32 bit + gdt! time to load the kernel :P", 0, 0
 
+%include "src/boot/print_vga.s"
+times 510 - ($ - second_sector_start) db 0
+
+third_sector_start:
+kernel_start_addr:
+    jmp     CODE_SEG:_START
+
+%include "src/boot/load_kernel.s"
