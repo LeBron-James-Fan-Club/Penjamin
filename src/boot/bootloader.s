@@ -65,6 +65,12 @@ continue_main:
     call    enter_a20
     call    setup_vga
 
+    ; setup kernel stuff (read disk space and load it into kernel load offset)
+    mov     al,     1
+    mov     cl,     2
+    mov     bx,     KERNEL_OFFSET
+    call    read_disk
+
     call    enter_gdt
 
     ; finally enter 32 bit protected mode with long jump
