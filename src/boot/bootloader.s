@@ -6,9 +6,9 @@
 
 ; i think this is a nasm thing since org and bits are preprocessor macros
 ; making sure our code starts at 0x7c00
-[org 0x7c00]
-[bits 16]
-KERNEL_OFFSET equ 0x1000
+extern kernel_main
+
+section .bootmain
 
 ; setup stack
     mov     bp,     0x7c00
@@ -68,7 +68,7 @@ continue_main:
     ; setup kernel stuff (read disk space and load it into kernel load offset)
     mov     al,     1
     mov     cl,     2
-    mov     bx,     KERNEL_OFFSET
+    mov     bx,     kernel_main
     call    read_disk
 
     call    enter_gdt
@@ -92,7 +92,7 @@ enter_protected_mode:
     mov     ebx,    gdt_success_string
     call    print__vga_init
 
-    call    KERNEL_OFFSET
+    call    kernel_main
     jmp     $
 
 

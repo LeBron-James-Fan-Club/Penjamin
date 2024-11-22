@@ -1,6 +1,0 @@
-ENTRY(_START)
-OUTPUT_FORMAT(binary)
-SECTIONS
-{
-
-}
