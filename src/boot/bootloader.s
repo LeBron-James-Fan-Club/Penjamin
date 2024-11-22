@@ -6,8 +6,9 @@
 
 ; i think this is a nasm thing since org and bits are preprocessor macros
 ; making sure our code starts at 0x7c00
-[org 0x7c00]
-[bits 16]
+extern kernel_main
+
+section .bootmain
 
 ; setup stack
     mov     bp,     0x7c00
@@ -28,7 +29,7 @@ start:
     mov     cl,     3
     mov     bx,     0x8000
     call    read_disk
-    
+
     jmp     continue_main
 
 
@@ -64,9 +65,15 @@ continue_main:
     call    enter_a20
     call    setup_vga
 
+    ; setup kernel stuff (read disk space and load it into kernel load offset)
+    mov     al,     1
+    mov     cl,     2
+    mov     bx,     kernel_main
+    call    read_disk
+
     call    enter_gdt
 
-    ; finally enter 32 bit protected mode
+    ; finally enter 32 bit protected mode with long jump
     jmp     CODE_SEG:enter_protected_mode
 
 
@@ -84,7 +91,9 @@ enter_protected_mode:
 
     mov     ebx,    gdt_success_string
     call    print__vga_init
-    jmp     CODE_SEG:kernel_start_addr
+
+    call    kernel_main
+    jmp     $
 
 
 disk_read_successful_string:
@@ -97,6 +106,6 @@ times 510 - ($ - second_sector_start) db 0
 
 third_sector_start:
 kernel_start_addr:
-    jmp     CODE_SEG:_START
+    ;jmp     CODE_SEG:_START
 
-%include "src/boot/load_kernel.s"
+;%include "src/boot/load_kernel.s"
